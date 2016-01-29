@@ -10,6 +10,13 @@ __global__ void add(int *a, int *b, int *c, int n)
 		c[index] = a[index] + b[index];
 }
 
+void fill(int *a, int len) {
+	while(len--) {
+		a[len] = len;
+		//printf("file m[%d] = %d\n", len, len);
+	}
+}
+
 #define N 16
 int main(void) 
 { 		
@@ -23,6 +30,8 @@ int main(void)
 	a = (int *)malloc(nsize); // fill-in a with values
 	b = (int *)malloc(nsize); // fill-in b with values
 	c = (int *)malloc(nsize);
+	fill(a, N);
+	fill(b, N);
 	cudaMemcpy(a1, &a, nsize, cudaMemcpyHostToDevice);
 	cudaMemcpy(b1, &b, nsize, cudaMemcpyHostToDevice);
 
@@ -31,7 +40,7 @@ int main(void)
 	cudaMemcpy(&c, c1, nsize, cudaMemcpyDeviceToHost); // result back to host
 
 	for(int x = 0; x < N; x++) {
-		printf("c[%d] = %d\n", x, c[x]);
+		printf("c[%d] = %d a[%d] + b[%d] = (%d + %d)\n", x, c[x], x, x, a[x], b[x]);
 	}
 	cudaFree(a1); cudaFree(b1); cudaFree(c1); free(a); free(b); free(c);
 	return 0; 	

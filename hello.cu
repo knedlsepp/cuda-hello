@@ -32,12 +32,12 @@ int main(void)
 	c = (int *)malloc(nsize);
 	fill(a, N);
 	fill(b, N);
-	cudaMemcpy(a1, &a, nsize, cudaMemcpyHostToDevice);
-	cudaMemcpy(b1, &b, nsize, cudaMemcpyHostToDevice);
+	cudaMemcpy(a1, a, nsize, cudaMemcpyHostToDevice);
+	cudaMemcpy(b1, b, nsize, cudaMemcpyHostToDevice);
 
 	// format: add<<< BLOCKS, THREADS >>>  access via blockIdx.x and threadIdx.x
 	add<<<N,1>>>(a1, b1, c1, N); // seen as N/THREADS_PER_BLOCK,THREADS_PER_BLOCK or (N + M-1) / M,M	
-	cudaMemcpy(&c, c1, nsize, cudaMemcpyDeviceToHost); // result back to host
+	cudaMemcpy(c, c1, nsize, cudaMemcpyDeviceToHost); // result back to host
 
 	for(int x = 0; x < N; x++) {
 		printf("c[%d] = %d a[%d] + b[%d] = (%d + %d)\n", x, c[x], x, x, a[x], b[x]);
